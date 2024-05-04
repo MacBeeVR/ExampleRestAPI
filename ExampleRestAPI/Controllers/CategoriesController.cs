@@ -8,7 +8,6 @@ namespace ExampleRestAPI.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly INorthwindDataService _dataService;
-
         public CategoriesController(INorthwindDataService dataService)
             => _dataService = dataService;
 
@@ -16,10 +15,9 @@ namespace ExampleRestAPI.Controllers
         public async Task<IActionResult> GetCategory(int id)
         {
             var category = await _dataService.GetCategoryAsync(id);
-            if (category is null)
-                return NotFound();
-
-            return Ok(category);
+            return category is null 
+                ? NotFound() 
+                : Ok(category);
         }
 
         [HttpGet]
@@ -37,14 +35,18 @@ namespace ExampleRestAPI.Controllers
         public async Task<IActionResult> UpdateCategory(Category category)
         {
             var result = await _dataService.UpdateCategoryAsync(category);
-            return result ? Ok() : BadRequest("An Issue Occurred Updating the Record");
+            return result 
+                ? Ok() 
+                : BadRequest("An Issue Occurred Updating the Record");
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var result = await _dataService.DeleteCategoryAsync(id);
-            return result ? Ok() : BadRequest("An Issue Occurred Deleting the Record");
+            return result 
+                ? Ok() 
+                : BadRequest("An Issue Occurred Deleting the Record");
         }
     }
 }
