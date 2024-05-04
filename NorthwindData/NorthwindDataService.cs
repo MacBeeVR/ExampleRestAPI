@@ -150,27 +150,10 @@ namespace NorthwindData
             {
                 await connection.OpenAsync();
 
-                var sql = @"INSERT INTO Customers(CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax)
-                            OUTPUT INSERTED.CustomerID
-                            VALUES(@CompanyName, @ContactName, @ContactTitle, @Address, @City, @Region, @PostalCode, @Country, @Phone, @Fax)";
+                var sql = @"INSERT INTO Customers(CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax)
+                            VALUES(@CustomerID, @CompanyName, @ContactName, @ContactTitle, @Address, @City, @Region, @PostalCode, @Country, @Phone, @Fax)";
 
-                var parameters = new
-                {
-                    customer.CompanyName,
-                    customer.ContactName, 
-                    customer.ContactTitle,
-                    customer.Address,
-                    customer.City,
-                    customer.Region,
-                    customer.PostalCode,
-                    customer.Country,
-                    customer.Phone,
-                    customer.Fax
-                };
-
-                var newID = await connection.QuerySingleAsync<string>(sql, parameters);
-
-                customer.CustomerID = newID;
+                await connection.ExecuteAsync(sql, customer);
             }
         }
 
@@ -181,15 +164,15 @@ namespace NorthwindData
                 await connection.OpenAsync();
 
                 var sql = @"UPDATE Customers
-                            SET CompanyName     = @CompanyName
-                                ContactName     = @ContactName
-                                ContactTitle    = @ContactTitle
-                                Address         = @Address
-                                City            = @City
-                                Region          = @Region
-                                PostalCode      = @PostalCode
-                                Country         = @Country
-                                Phone           = @Phone
+                            SET CompanyName     = @CompanyName,
+                                ContactName     = @ContactName,
+                                ContactTitle    = @ContactTitle,
+                                Address         = @Address,
+                                City            = @City,
+                                Region          = @Region,
+                                PostalCode      = @PostalCode,
+                                Country         = @Country,
+                                Phone           = @Phone,
                                 Fax             = @Fax
                             WHERE CustomerID = @CustomerID";
 
@@ -204,7 +187,7 @@ namespace NorthwindData
             using (var connection = _ConnectionManager.GetConnection())
             {
                 await connection.OpenAsync();
-                var rowsAffected = await connection.ExecuteAsync("DELETE FROM Customers WHERE CompanyID = @id", new { id });
+                var rowsAffected = await connection.ExecuteAsync("DELETE FROM Customers WHERE CustomerID = @id", new { id });
 
                 return rowsAffected == 1;
             }
