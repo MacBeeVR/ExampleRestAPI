@@ -6,24 +6,25 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddEndpointsApiExplorer()
+                .AddSwaggerGen();
 
-// Register Northwind DB Data Services
-builder.Services.AddNorthwindServices();
+// Register Northwind DB Data Services and Automapping
+builder.Services.AddNorthwindServices()
+                .AddAutoMapper(typeof(Program));
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger()
+       .UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
+app.UseHttpsRedirection()
+   .UseAuthorization();
 
 app.MapControllers();
 

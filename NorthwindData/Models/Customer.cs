@@ -13,6 +13,5 @@
         public string?  Country         { get; set; } = null;
         public string?  Phone           { get; set; } = null;
         public string?  Fax             { get; set; } = null;
-
     }
 }

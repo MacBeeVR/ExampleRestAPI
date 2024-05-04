@@ -1,15 +1,22 @@
 ﻿using NorthwindData;
 using NorthwindData.Models;
 using Microsoft.AspNetCore.Mvc;
+using ExampleRestAPI.DTOs;
+using AutoMapper;
 
 namespace ExampleRestAPI.Controllers
 {
     [ApiController, Route("api/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private readonly INorthwindDataService _dataService;
-        public CategoriesController(INorthwindDataService dataService)
-            => _dataService = dataService;
+        private readonly IMapper                _mapper;
+        private readonly INorthwindDataService  _dataService;
+
+        public CategoriesController(INorthwindDataService dataService, IMapper mapper)
+        {
+            _mapper         = mapper;
+            _dataService    = dataService;
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(int id)
@@ -25,19 +32,32 @@ namespace ExampleRestAPI.Controllers
             => Ok(await _dataService.GetCategoriesAsync());
 
         [HttpPost]
-        public async Task<IActionResult> AddCategory(Category category)
+        public async Task<IActionResult> AddCategory(CategoryDTO category)
         {
-            await _dataService.AddCategoryAsync(category);
-            return Created($"api/Categories/{category.CategoryID}", category);
+            if (ModelState.IsValid)
+            {
+                var data = _mapper.Map<Category>(category);
+                await _dataService.AddCategoryAsync(data);
+                return Created($"api/Categories/{data.CategoryID}", category);
+            }
+
+            return BadRequest(ModelState);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateCategory(Category category)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCategory(int id, CategoryDTO category)
         {
-            var result = await _dataService.UpdateCategoryAsync(category);
-            return result 
-                ? Ok() 
-                : BadRequest("An Issue Occurred Updating the Record");
+            if (ModelState.IsValid)
+            {
+                var data = _mapper.Map<Category>(category);
+                data.CategoryID = id;
+                var result = await _dataService.UpdateCategoryAsync(data);
+                return result
+                    ? Ok()
+                    : BadRequest("An Issue Occurred Updating the Record");
+            }
+
+            return BadRequest(ModelState);
         }
 
         [HttpDelete("{id}")]
