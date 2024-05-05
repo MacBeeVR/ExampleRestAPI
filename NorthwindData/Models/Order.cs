@@ -38,8 +38,10 @@ namespace NorthwindData.Models
         #endregion
 
         #region Relational Properties
-        public Shipper?             Shipper { get; set; } = null;
-        public List<OrderDetails>   Details { get; set; } = new List<OrderDetails>();
+        public Employee?            Employee    { get; set; } = null;
+        public Customer?            Customer    { get; set; } = null;
+        public Shipper?             Shipper     { get; set; } = null;
+        public List<OrderDetails>   Details     { get; set; } = new List<OrderDetails>();
         #endregion
     }
 }

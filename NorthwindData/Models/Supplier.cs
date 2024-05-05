@@ -5,6 +5,7 @@ namespace NorthwindData.Models
 {
     public class Supplier
     {
+        #region DB Field Properties
         [RequiredInt(DefaultValue = int.MinValue)]
         public int      SupplierID      { get; set; } = int.MinValue;
 
@@ -38,5 +39,6 @@ namespace NorthwindData.Models
         [Phone, MaxLength(24)]
         public string?  Fax             { get; set; } = null;
         public string?  HomePage        { get; set; } = null;
+        #endregion
     }
 }

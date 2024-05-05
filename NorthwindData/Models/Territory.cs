@@ -5,6 +5,7 @@ namespace NorthwindData.Models
 {
     public class Territory
     {
+        #region DB Field Properties
         [Required(AllowEmptyStrings = false), MaxLength(20)]
         public string   TerritoryID             { get; set; } = string.Empty;
 
@@ -13,5 +14,10 @@ namespace NorthwindData.Models
 
         [RequiredInt(DefaultValue = int.MinValue)]
         public int      RegionID                { get; set; } = int.MinValue;
+        #endregion
+
+        #region Relational Properties
+        public Region Region { get; set; } = new Region();
+        #endregion
     }
 }

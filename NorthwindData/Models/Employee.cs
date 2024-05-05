@@ -53,7 +53,8 @@ namespace NorthwindData.Models
         #endregion
 
         #region Relational Properties
-        public Employee? Boss { get; set; } = null;
+        public Employee?        Boss        { get; set; } = null;
+        public List<Territory>  Territories { get; set; } = new List<Territory>();
         #endregion
     }
 }

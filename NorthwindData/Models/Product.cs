@@ -5,6 +5,7 @@ namespace NorthwindData.Models
 {
     public class Product
     {
+        #region DB Field Properties
         [RequiredInt(DefaultValue = int.MinValue)]
         public int      ProductID       { get; set; } = int.MinValue;
 
@@ -20,6 +21,7 @@ namespace NorthwindData.Models
         public short?   UnitsOnOrder    { get; set; } = null;
         public short?   ReorderLevel    { get; set; } = null;
         public bool     Discontinued    { get; set; }
+        #endregion
 
         #region Relational Properties
         public Supplier? Supplier { get; set; } = null;
