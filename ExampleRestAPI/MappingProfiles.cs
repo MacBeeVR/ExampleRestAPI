@@ -8,8 +8,7 @@ namespace ExampleRestAPI
     {
         public MappingProfiles()
         {
-            CreateMap<Category, CategoryDTO>().ReverseMap();
-            CreateMap<Customer, CustomerDTO>().ReverseMap();
+            CreateMap<Category, CategoryInsertDTO>().ReverseMap();
         }
     }
 }

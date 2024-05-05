@@ -2,7 +2,7 @@
 
 namespace ExampleRestAPI.DTOs
 {
-    public class CategoryDTO
+    public class CategoryInsertDTO
     {
         [Required(      ErrorMessage = "CategoryName is Required")]
         [MaxLength(15,  ErrorMessage = "CategoryName is Too Long!")]

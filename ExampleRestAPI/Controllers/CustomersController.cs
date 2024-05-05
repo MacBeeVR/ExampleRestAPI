@@ -1,7 +1,6 @@
 ﻿using NorthwindData;
 using NorthwindData.Models;
 using Microsoft.AspNetCore.Mvc;
-using ExampleRestAPI.DTOs;
 using AutoMapper;
 
 namespace ExampleRestAPI.Controllers
@@ -32,35 +31,21 @@ namespace ExampleRestAPI.Controllers
             => Ok(await _dataService.GetCustomersAsync());
 
         [HttpPost]
-        public async Task<IActionResult> AddCustomer(CustomerDTO customer)
+        public async Task<IActionResult> AddCustomer(Customer customer)
         {
-            if (ModelState.IsValid)
-            {
-                var data = _mapper.Map<Customer>(customer);
-                await _dataService.AddCustomerAsync(data);
-                return Created($"api/Customers/{data.CustomerID}", customer);
-            }
-
-            return BadRequest(ModelState);
-            
+            var data = _mapper.Map<Customer>(customer);
+            await _dataService.AddCustomerAsync(data);
+            return Created($"api/Customers/{data.CustomerID}", customer);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCustomer(string id, CustomerDTO customer)
+        [HttpPut]
+        public async Task<IActionResult> UpdateCustomer(Customer customer)
         {
-            if (id != customer.CustomerId)
-                return BadRequest();
-
-            if (ModelState.IsValid)
-            {
-                var data    = _mapper.Map<Customer>(customer);
-                var result  = await _dataService.UpdateCustomerAsync(data);
-                return result
-                    ? Ok()
-                    : BadRequest("An Issue Occurred Updating the Record");
-            }
-
-            return BadRequest(ModelState);
+            var data    = _mapper.Map<Customer>(customer);
+            var result  = await _dataService.UpdateCustomerAsync(data);
+            return result
+                ? Ok()
+                : BadRequest("An Issue Occurred Updating the Record");
         }
 
         [HttpDelete("{id}")]

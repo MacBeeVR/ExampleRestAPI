@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleRestAPI", "ExampleRestAPI\ExampleRestAPI.csproj", "{EAB2B87F-FDE5-4839-8A99-104F4367F198}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleRestAPI", "ExampleRestAPI\ExampleRestAPI.csproj", "{EAB2B87F-FDE5-4839-8A99-104F4367F198}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NorthwindData", "NorthwindData\NorthwindData.csproj", "{6891586C-1F81-4A31-BE57-C850687AD175}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NorthwindData", "NorthwindData\NorthwindData.csproj", "{6891586C-1F81-4A31-BE57-C850687AD175}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidationTools", "ValidationTools\ValidationTools.csproj", "{90B032A8-0ACF-49D6-84F1-5EDB1D093305}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{6891586C-1F81-4A31-BE57-C850687AD175}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6891586C-1F81-4A31-BE57-C850687AD175}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6891586C-1F81-4A31-BE57-C850687AD175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90B032A8-0ACF-49D6-84F1-5EDB1D093305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90B032A8-0ACF-49D6-84F1-5EDB1D093305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90B032A8-0ACF-49D6-84F1-5EDB1D093305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90B032A8-0ACF-49D6-84F1-5EDB1D093305}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
