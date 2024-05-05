@@ -14,5 +14,12 @@
         public string?  Phone           { get; set; } = null;
         public string?  Fax             { get; set; } = null;
 
+        [Phone, MaxLength(24)]
+        public string?  Fax             { get; set; } = null;
+        #endregion
+
+        #region Relational Properties
+        public List<CustomerDemographics> CustomerDemographics { get; set; } = new List<CustomerDemographics>();
+        #endregion
     }
 }
