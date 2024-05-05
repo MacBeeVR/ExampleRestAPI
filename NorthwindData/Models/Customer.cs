@@ -2,6 +2,7 @@
 {
     public class Customer
     {
+        #region DB Field Properties
         public string   CustomerID      { get; set; } = string.Empty;
         public string   CompanyName     { get; set; } = string.Empty;
         public string?  ContactName     { get; set; } = null;
@@ -12,9 +13,6 @@
         public string?  PostalCode      { get; set; } = null;
         public string?  Country         { get; set; } = null;
         public string?  Phone           { get; set; } = null;
-        public string?  Fax             { get; set; } = null;
-
-        [Phone, MaxLength(24)]
         public string?  Fax             { get; set; } = null;
         #endregion
 
