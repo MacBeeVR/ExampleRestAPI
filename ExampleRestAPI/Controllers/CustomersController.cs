@@ -2,6 +2,7 @@
 using NorthwindData.Models;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using System.ComponentModel.DataAnnotations;
 
 namespace ExampleRestAPI.Controllers
 {
@@ -18,7 +19,7 @@ namespace ExampleRestAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCustomer(string id)
+        public async Task<IActionResult> GetCustomer([MaxLength(5)] string id)
         {
             var customer = await _dataService.GetCustomerAsync(id);
             return customer is null 
@@ -33,28 +34,30 @@ namespace ExampleRestAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCustomer(Customer customer)
         {
-            var data = _mapper.Map<Customer>(customer);
-            await _dataService.AddCustomerAsync(data);
-            return Created($"api/Customers/{data.CustomerID}", customer);
+            var succeeded = await _dataService.AddCustomerAsync(customer);
+            return succeeded
+                ? Created($"api/Customers/{customer.CustomerID}", customer)
+                : BadRequest(ErrorMessageStrings.RecordAddError);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCustomer(Customer customer)
         {
-            var data    = _mapper.Map<Customer>(customer);
-            var result  = await _dataService.UpdateCustomerAsync(data);
-            return result
+            var data        = _mapper.Map<Customer>(customer);
+            var succeeded   = await _dataService.UpdateCustomerAsync(data);
+
+            return succeeded
                 ? Ok()
-                : BadRequest("An Issue Occurred Updating the Record");
+                : BadRequest(ErrorMessageStrings.RecordUpdateError);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer(string id)
+        public async Task<IActionResult> DeleteCustomer([MaxLength(5)] string id)
         {
-            var result = await _dataService.DeleteCustomerAsync(id);
-            return result
+            var succeeded = await _dataService.DeleteCustomerAsync(id);
+            return succeeded
                 ? Ok()
-                : BadRequest("An Issue Occurred Deleting the Record");
+                : BadRequest(ErrorMessageStrings.RecordDeleteError);
         }
     }
 }

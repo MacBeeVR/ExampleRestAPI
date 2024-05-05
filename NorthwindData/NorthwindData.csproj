@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ValidationTools\ValidationTools.csproj" />
+    <ProjectReference Include="..\NorthwindData.Models\NorthwindData.Models.csproj" />
   </ItemGroup>
 
 </Project>

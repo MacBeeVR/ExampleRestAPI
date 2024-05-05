@@ -34,27 +34,29 @@ namespace ExampleRestAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCategory(CategoryInsertDTO category)
         {
-            var data = _mapper.Map<Category>(category);
-            await _dataService.AddCategoryAsync(data);
-            return Created($"api/Categories/{data.CategoryID}", category);
+            var data        = _mapper.Map<Category>(category);
+            var succeeded   = await _dataService.AddCategoryAsync(data);
+            return succeeded
+                ? Created($"api/Categories/{data.CategoryID}", category)
+                : BadRequest(ErrorMessageStrings.RecordAddError);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCategory(Category category)
         {
-            var result = await _dataService.UpdateCategoryAsync(category);
-            return result
+            var succeeded = await _dataService.UpdateCategoryAsync(category);
+            return succeeded
                 ? Ok()
-                : BadRequest("An Issue Occurred Updating the Record");
+                : BadRequest(ErrorMessageStrings.RecordUpdateError);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var result = await _dataService.DeleteCategoryAsync(id);
-            return result 
+            var succeeded = await _dataService.DeleteCategoryAsync(id);
+            return succeeded 
                 ? Ok() 
-                : BadRequest("An Issue Occurred Deleting the Record");
+                : BadRequest(ErrorMessageStrings.RecordDeleteError);
         }
     }
 }

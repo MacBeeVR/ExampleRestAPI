@@ -1,0 +1,13 @@
+{
+  "ConnectionStrings": {
+    "NorthwindDB": "YOUR_TEST_DB_CONNECTION_STRING_HERE"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "DbBackupFolder": "Backup/"
+}

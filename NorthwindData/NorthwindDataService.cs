@@ -8,17 +8,28 @@ namespace NorthwindData
         #region Categories
         Task<Category?>         GetCategoryAsync(int id);
         Task<List<Category>>    GetCategoriesAsync();
-        Task                    AddCategoryAsync(Category category);
+        Task<bool>              AddCategoryAsync(Category category);
         Task<bool>              UpdateCategoryAsync(Category category);
         Task<bool>              DeleteCategoryAsync(int id);
         #endregion
 
         #region Customers
-        Task<Customer?>         GetCustomerAsync(string id);
-        Task<List<Customer>>    GetCustomersAsync();
-        Task                    AddCustomerAsync(Customer customer);
+        Task<Customer?>         GetCustomerAsync(string id, bool includeRelations = false);
+        Task<List<Customer>>    GetCustomersAsync(bool includeRelations = false);
+        Task<bool>              AddCustomerAsync(Customer customer);
         Task<bool>              UpdateCustomerAsync(Customer customer);
         Task<bool>              DeleteCustomerAsync(string id);
+
+        Task<bool>              AddCustomerDemographicForCustomerAsync(string customerID, string customerTypeID);
+        Task<bool>              AddCustomerDemographicForCustomerAsync(string customerID, CustomerDemographics demographics);
+        #endregion
+
+        #region Customer Demographics
+        Task<CustomerDemographics?>         GetCustomerDemographicsAsync(string id);
+        Task<List<CustomerDemographics>>    GetCustomerDemographicsAsync();
+        Task<bool>                          AddCustomerDemographicsAsync(CustomerDemographics demographics);
+        Task<bool>                          UpdateCustomerDemographicsAsync(CustomerDemographics demographics);
+        Task<bool>                          DeleteCustomerDemographicsAsync(string id);
         #endregion
     }
 
@@ -56,8 +67,11 @@ namespace NorthwindData
             }
         }
 
-        public async Task AddCategoryAsync(Category category)
+        public async Task<bool> AddCategoryAsync(Category category)
         {
+            if (await GetCategoryAsync(category.CategoryID) is not null)
+                return false;
+
             using (var connection = _ConnectionManager.GetConnection())
             {
                 await connection.OpenAsync();
@@ -76,6 +90,8 @@ namespace NorthwindData
                 var newID = await connection.QuerySingleAsync<int>(sql, parameters);
 
                 category.CategoryID = newID;
+
+                return true;
             }
         }
 
@@ -118,21 +134,18 @@ namespace NorthwindData
         #endregion
 
         #region Customers
-        public async Task<Customer?> GetCustomerAsync(string id)
+        public async Task<Customer?> GetCustomerAsync(string id, bool includeRelations = false)
         {
             using (var connection = _ConnectionManager.GetConnection())
             {
                 await connection.OpenAsync();
-
-                var customer = await connection.QuerySingleOrDefaultAsync<Customer>(
-                    "SELECT * FROM Customers WHERE CustomerID = @id",
-                    new { id });
+                var customer = await connection.QuerySingleOrDefaultAsync<Customer>("SELECT * FROM Customers WHERE CustomerID = @id", new { id });
 
                 return customer;
             }
         }
 
-        public async Task<List<Customer>> GetCustomersAsync()
+        public async Task<List<Customer>> GetCustomersAsync(bool includeRelations = false)
         {
             using (var connection = _ConnectionManager.GetConnection())
             {
@@ -144,8 +157,11 @@ namespace NorthwindData
             }
         }
 
-        public async Task AddCustomerAsync(Customer customer)
+        public async Task<bool> AddCustomerAsync(Customer customer)
         {
+            if (await GetCustomerAsync(customer.CustomerID) is not null)
+                return false;
+
             using (var connection = _ConnectionManager.GetConnection())
             {
                 await connection.OpenAsync();
@@ -153,7 +169,7 @@ namespace NorthwindData
                 var sql = @"INSERT INTO Customers(CustomerID, CompanyName, ContactName, ContactTitle, Address, City, Region, PostalCode, Country, Phone, Fax)
                             VALUES(@CustomerID, @CompanyName, @ContactName, @ContactTitle, @Address, @City, @Region, @PostalCode, @Country, @Phone, @Fax)";
 
-                await connection.ExecuteAsync(sql, customer);
+                return await connection.ExecuteAsync(sql, customer) == 1;
             }
         }
 
@@ -190,6 +206,106 @@ namespace NorthwindData
                 var rowsAffected = await connection.ExecuteAsync("DELETE FROM Customers WHERE CustomerID = @id", new { id });
 
                 return rowsAffected == 1;
+            }
+        }
+
+        public async Task<bool> AddCustomerDemographicForCustomerAsync(string customerID, string customerTypeID)
+        {
+            var demographicExists = (await GetCustomerDemographicsForCustomerAsync(customerID))
+                .Where(demo => demo.CustomerTypeID == customerTypeID)
+                .FirstOrDefault() is not null;
+
+
+            if (demographicExists)
+                return false;
+
+            using (var connection = _ConnectionManager.GetConnection())
+            {
+                await connection.OpenAsync();
+                var sql = @"INSERT INTO CustomerCustomerDemo(CustomerID, CustomerTypeID)
+                            VALUES(@customerID, @customerTypeID)";
+
+                return await connection.ExecuteAsync(sql, new { customerID, customerTypeID }) == 1;
+            }
+        }
+
+        public async Task<bool> AddCustomerDemographicForCustomerAsync(string customerID, CustomerDemographics demographics)
+        {
+            // Try Adding Non-Existent CustomerDemographics Record
+            if (await GetCustomerDemographicsAsync(demographics.CustomerTypeID) is null)
+                if (!await AddCustomerDemographicsAsync(demographics))
+                    return false;
+            
+            
+            return await AddCustomerDemographicForCustomerAsync(customerID, demographics.CustomerTypeID);
+        }
+        #endregion
+
+        #region Customer Demographics
+        public async Task<CustomerDemographics?> GetCustomerDemographicsAsync(string id)
+        {
+            using (var connection = _ConnectionManager.GetConnection())
+            {
+                await connection.OpenAsync();
+                return await connection.QuerySingleOrDefaultAsync<CustomerDemographics>("SELECT * FROM CustomerDemographics WHERE CustomerTypeID = @id", new { id }); ;
+            }
+        }
+
+        public async Task<List<CustomerDemographics>> GetCustomerDemographicsAsync()
+        {
+            using (var connection = _ConnectionManager.GetConnection())
+            {
+                await connection.OpenAsync();
+                return (await connection.QueryAsync<CustomerDemographics>("SELECT * FROM CustomerDemographics")).ToList();
+            }
+        }
+
+        public async Task<List<CustomerDemographics>> GetCustomerDemographicsForCustomerAsync(string customerID)
+        {
+            using (var connection = _ConnectionManager.GetConnection())
+            {
+                await connection.OpenAsync();
+                var demographicIDs = await connection.QueryAsync<string>(               "SELECT CustomerTypeID FROM CustomeCustomerDemo WHERE CustomerID = @customerID" , new { customerID      });
+                var demographics   = await connection.QueryAsync<CustomerDemographics>( "SELECT * FROM CustomerDemographics WHERE CustomerTypeID IN @demographicIDs"    , new { demographicIDs  });
+
+                return demographics.ToList();
+            }
+        }
+
+        public async Task<bool> AddCustomerDemographicsAsync(CustomerDemographics demographics)
+        {
+            if (await GetCustomerDemographicsAsync(demographics.CustomerTypeID) is not null)
+                return false;
+
+            using (var connection = _ConnectionManager.GetConnection())
+            {
+                await connection.OpenAsync();
+                var sql = @"INSERT INTO CustomerDemographics(CustomerTypeID, CustomerDesc)
+                            VALUES(@CustomerTypeID, @CustomerDesc)";
+
+                return await connection.ExecuteAsync(sql, demographics) == 1;
+            }
+        }
+
+        public async Task<bool> UpdateCustomerDemographicsAsync(CustomerDemographics demographics)
+        {
+            using (var connection = _ConnectionManager.GetConnection())
+            {
+                await connection.OpenAsync();
+                var sql = @"UPDATE CustomerDemographics
+                            SET CustomerDesc = @CustomerDesc
+                            WHERE CustomerTypeID = @CustomerTypeID";
+
+                return await connection.ExecuteAsync(sql, demographics) == 1;
+            }
+        }
+
+        public async Task<bool> DeleteCustomerDemographicsAsync(string id)
+        {
+            using (var connection = _ConnectionManager.GetConnection())
+            {
+                await connection.OpenAsync();
+                return await connection.ExecuteAsync("DELETE FROM CustomerDemographics WHERE CustomerTypeID = @id", new { id }) == 1;
             }
         }
         #endregion

@@ -1,27 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>e00ce2b8-60c6-4a05-8256-f766b55f49e2</UserSecretsId>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>e00ce2b8-60c6-4a05-8256-f766b55f49e2</UserSecretsId>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="NewFolder\**" />
-    <Content Remove="NewFolder\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
-    <None Remove="NewFolder\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="NewFolder\**" />
+        <Content Remove="NewFolder\**" />
+        <EmbeddedResource Remove="NewFolder\**" />
+        <None Remove="NewFolder\**" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\NorthwindData\NorthwindData.csproj" />
-    <ProjectReference Include="..\ValidationTools\ValidationTools.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\NorthwindData\NorthwindData.csproj" />
+        <ProjectReference Include="..\ValidationTools\ValidationTools.csproj" />
+    </ItemGroup>
 
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="$(AssemblyName).Test"/>
+	</ItemGroup>
 </Project>

@@ -9,9 +9,5 @@ namespace NorthwindData.Models
         public string   CustomerTypeID  { get; set; } = string.Empty;
         public string?  CustomerDesc    { get; set; } = null;
         #endregion
-
-        #region Relational Properties
-        public List<CustomerDemographics> CustomerDemographicsList { get; set; } = new List<CustomerDemographics>();
-        #endregion
     }
 }

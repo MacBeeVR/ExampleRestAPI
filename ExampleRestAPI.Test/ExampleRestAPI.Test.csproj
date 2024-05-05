@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <UserSecretsId>d91153b0-eed8-49b2-bff2-9b971dc8bb38</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="TestSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TestSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.0.4" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.0.4" />
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ExampleRestAPI\ExampleRestAPI.csproj" />
+    <ProjectReference Include="..\NorthwindData.Models\NorthwindData.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Backup\" />
+  </ItemGroup>
+
+</Project>
