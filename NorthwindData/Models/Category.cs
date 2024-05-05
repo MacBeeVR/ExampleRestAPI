@@ -5,6 +5,7 @@ namespace NorthwindData.Models
 {
     public class Category
     {
+        #region DB Field Properties
         [RequiredInt(DefaultValue = int.MinValue, ErrorMessage = "CategoryID is Required")]
         public int      CategoryID      { get; set; } = int.MinValue;
 
@@ -13,5 +14,6 @@ namespace NorthwindData.Models
         public string   CategoryName    { get; set; } = string.Empty;
         public string?  Description     { get; set; } = null;
         public byte[]?  Picture         { get; set; } = null;
+        #endregion
     }
 }
