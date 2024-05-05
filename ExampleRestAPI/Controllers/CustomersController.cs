@@ -1,15 +1,21 @@
 ﻿using NorthwindData;
 using NorthwindData.Models;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace ExampleRestAPI.Controllers
 {
     [ApiController, Route("api/[controller]")]
     public class CustomersController : ControllerBase
     {
-        private readonly INorthwindDataService _dataService;
-        public CustomersController(INorthwindDataService dataService)
-            => _dataService = dataService;
+        private readonly IMapper                _mapper;
+        private readonly INorthwindDataService  _dataService;
+
+        public CustomersController(INorthwindDataService dataService, IMapper mapper)
+        {
+            _mapper         = mapper;
+            _dataService    = dataService;
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCustomer(string id)
@@ -27,16 +33,18 @@ namespace ExampleRestAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCustomer(Customer customer)
         {
-            await _dataService.AddCustomerAsync(customer);
-            return Created($"api/Customers/{customer.CustomerID}", customer);
+            var data = _mapper.Map<Customer>(customer);
+            await _dataService.AddCustomerAsync(data);
+            return Created($"api/Customers/{data.CustomerID}", customer);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCustomer(Customer customer)
         {
-            var result = await _dataService.UpdateCustomerAsync(customer);
-            return result 
-                ? Ok() 
+            var data    = _mapper.Map<Customer>(customer);
+            var result  = await _dataService.UpdateCustomerAsync(data);
+            return result
+                ? Ok()
                 : BadRequest("An Issue Occurred Updating the Record");
         }
 

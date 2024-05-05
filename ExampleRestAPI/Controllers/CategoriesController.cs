@@ -1,15 +1,22 @@
 ﻿using NorthwindData;
 using NorthwindData.Models;
 using Microsoft.AspNetCore.Mvc;
+using ExampleRestAPI.DTOs;
+using AutoMapper;
 
 namespace ExampleRestAPI.Controllers
 {
     [ApiController, Route("api/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private readonly INorthwindDataService _dataService;
-        public CategoriesController(INorthwindDataService dataService)
-            => _dataService = dataService;
+        private readonly IMapper                _mapper;
+        private readonly INorthwindDataService  _dataService;
+
+        public CategoriesController(INorthwindDataService dataService, IMapper mapper)
+        {
+            _mapper         = mapper;
+            _dataService    = dataService;
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(int id)
@@ -25,18 +32,19 @@ namespace ExampleRestAPI.Controllers
             => Ok(await _dataService.GetCategoriesAsync());
 
         [HttpPost]
-        public async Task<IActionResult> AddCategory(Category category)
+        public async Task<IActionResult> AddCategory(CategoryInsertDTO category)
         {
-            await _dataService.AddCategoryAsync(category);
-            return Created($"api/Categories/{category.CategoryID}", category);
+            var data = _mapper.Map<Category>(category);
+            await _dataService.AddCategoryAsync(data);
+            return Created($"api/Categories/{data.CategoryID}", category);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCategory(Category category)
         {
             var result = await _dataService.UpdateCategoryAsync(category);
-            return result 
-                ? Ok() 
+            return result
+                ? Ok()
                 : BadRequest("An Issue Occurred Updating the Record");
         }
 
