@@ -9,5 +9,6 @@
     }
   },
   "AllowedHosts": "*",
-  "DbBackupFolder": "Backup/"
+  "DbBackupFolder": "YOUR_BACKUP_FOLDER_HERE",
+  "MasterDBName": "master"
 }
