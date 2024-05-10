@@ -40,7 +40,7 @@ namespace NorthwindData.Models
         #endregion
 
         #region Relational Properties
-        public List<CustomerDemographics> CustomerDemographics { get; set; } = new List<CustomerDemographics>();
+        public List<CustomerDemographic> Demographics { get; set; } = new List<CustomerDemographic>();
         #endregion
     }
 }

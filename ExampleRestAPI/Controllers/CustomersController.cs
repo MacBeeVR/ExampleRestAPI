@@ -19,7 +19,7 @@ namespace ExampleRestAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCustomer([MaxLength(5)] string id)
+        public async Task<IActionResult> GetCustomer([MaxLength(5), Required] string id)
         {
             var customer = await _dataService.GetCustomerAsync(id);
             return customer is null 
@@ -52,9 +52,31 @@ namespace ExampleRestAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer([MaxLength(5)] string id)
+        public async Task<IActionResult> DeleteCustomer([MaxLength(5), Required] string id)
         {
             var succeeded = await _dataService.DeleteCustomerAsync(id);
+            return succeeded
+                ? Ok()
+                : BadRequest(ErrorMessageStrings.RecordDeleteError);
+        }
+
+        [HttpPost("{customerId}/Demographics/{customerTypeId}")]
+        public async Task<IActionResult> AddCustomerDemographic(
+            [MaxLength(5) , Required] string customerId,
+            [MaxLength(10), Required] string customerTypeId)
+        {
+            var succeeded = await _dataService.AddDemographicToCustomer(customerId, customerTypeId);
+            return succeeded
+                ? Ok()
+                : BadRequest(ErrorMessageStrings.RecordAddError);
+        }
+
+        [HttpDelete("{customerId}/Demographics/{customerTypeId}")]
+        public async Task<IActionResult> DeleteCustomerDemographic(
+            [MaxLength(5) , Required] string customerId,
+            [MaxLength(10), Required] string customerTypeId)
+        {
+            var succeeded = await _dataService.DeleteDemographicFromCustomer(customerId, customerTypeId);
             return succeeded
                 ? Ok()
                 : BadRequest(ErrorMessageStrings.RecordDeleteError);

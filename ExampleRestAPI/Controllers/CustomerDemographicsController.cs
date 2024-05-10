@@ -26,7 +26,7 @@ namespace ExampleRestAPI.Controllers
             => Ok(await _dataService.GetCustomerDemographicsAsync());
 
         [HttpPost]
-        public async Task<IActionResult> AddCustomerDemographic(CustomerDemographics demographic)
+        public async Task<IActionResult> AddCustomerDemographic(CustomerDemographic demographic)
         {
             var succeeded = await _dataService.AddCustomerDemographicsAsync(demographic);
             return succeeded
@@ -35,7 +35,7 @@ namespace ExampleRestAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCustomerDemographic(CustomerDemographics demographic)
+        public async Task<IActionResult> UpdateCustomerDemographic(CustomerDemographic demographic)
         {
             var succeeded = await _dataService.UpdateCustomerDemographicsAsync(demographic);
             return succeeded

@@ -2,7 +2,7 @@
 
 namespace NorthwindData.Models
 {
-    public class CustomerDemographics
+    public class CustomerDemographic
     {
         #region DB Field Properties
         [Required(AllowEmptyStrings = false)]

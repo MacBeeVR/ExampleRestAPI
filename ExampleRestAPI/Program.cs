@@ -14,6 +14,9 @@ builder.Services.AddNorthwindServices()
                 .AddAutoMapper(typeof(Program));
 
 
+builder.Configuration
+       .AddUserSecrets(typeof(Program).Assembly);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
