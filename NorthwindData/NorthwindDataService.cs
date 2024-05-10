@@ -165,20 +165,24 @@ namespace NorthwindData
             {
                 await connection.OpenAsync();
 
-                var query = @"SELECT C.*, '-', CD.* FROM Customers C
-                              INNER JOIN CustomerCustomerDemo CCD ON C.CustomerID       = CCD.CustomerID
-                              INNER JOIN CustomerDemographics CD  ON CCD.CustomerTypeID = CD.CustomerTypeID
+                var query = @"SELECT C.*, CD.* FROM Customers C
+                              LEFT JOIN CustomerCustomerDemo CCD ON C.CustomerID       = CCD.CustomerID
+                              LEFT JOIN CustomerDemographics CD  ON CCD.CustomerTypeID = CD.CustomerTypeID
                               WHERE C.CustomerID = @id";
 
-                var customer = (await connection.QueryAsync<Customer, CustomerDemographic, Customer>(
+                var customer = (Customer?)null;
+                (await connection.QueryAsync<Customer, CustomerDemographic, Customer>(
                     query,
                     (c, cd) =>
                     {
-                        c.Demographics.Add(cd);
+                        if (customer is null)
+                            customer = c;
+
+                        customer.Demographics.Add(cd);
                         return c;
                     },
                     new { id },
-                    splitOn: "-")).FirstOrDefault();
+                    splitOn: "CustomerTypeID")).FirstOrDefault();
 
                 return customer;
             }
@@ -194,9 +198,9 @@ namespace NorthwindData
             {
                 await connection.OpenAsync();
 
-                var query = @"SELECT C.*, '-', CD.* FROM Customers C
-                              INNER JOIN CustomerCustomerDemo CCD ON C.CustomerID       = CCD.CustomerID
-                              INNER JOIN CustomerDemographics CD  ON CCD.CustomerTypeID = CD.CustomerTypeID";
+                var query = @"SELECT C.*, CD.* FROM Customers C
+                              LEFT JOIN CustomerCustomerDemo CCD ON C.CustomerID       = CCD.CustomerID
+                              LEFT JOIN CustomerDemographics CD  ON CCD.CustomerTypeID = CD.CustomerTypeID";
 
                 // Get Customers and Demographics and Map them to the Data Objects
                 var lookup    = new Dictionary<string, Customer>();
@@ -214,7 +218,7 @@ namespace NorthwindData
                         customer.Demographics.Add(cd);
                         return customer;
                     }, 
-                    splitOn: "-");
+                    splitOn: "CustomerTypeID");
 
                 return customers.ToList();
             }
